@@ -1,0 +1,864 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TỔNG QUAN GOOGLE ADS</title>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <style>
+    :root{
+      --bg:#07100c;--card:#12221a;--card2:#182c22;--line:#294938;--line2:#345c46;
+      --green:#00ff66;--green2:#8dffbd;--gold:#ffc857;--red:#ff5c7a;--blue:#6cc7ff;
+      --text:#f0fff5;--muted:#92b69d;--black:#07100c;--shadow:0 22px 70px rgba(0,0,0,.36)
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,rgba(0,255,102,.18),transparent 30%),radial-gradient(circle at 92% 5%,rgba(255,200,87,.12),transparent 28%),linear-gradient(180deg,#0b1511,#07100c);color:var(--text)}
+    .wrap{max-width:1760px;margin:0 auto;padding:22px}
+    .top{display:grid;grid-template-columns:1fr auto;gap:18px;align-items:center;background:linear-gradient(135deg,rgba(18,34,26,.98),rgba(10,24,17,.96));border:1px solid var(--line);border-radius:28px;padding:24px 26px;box-shadow:var(--shadow);margin-bottom:16px}
+    .title h1{margin:0;font-size:31px;letter-spacing:.6px}.title p{margin:8px 0 0;color:var(--muted);font-size:14px;line-height:1.5}
+    .uploadBox{display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:flex-end}.fileBtn,.sheetBtn{min-height:46px;display:inline-flex;align-items:center;justify-content:center;gap:7px;border-radius:16px;padding:12px 17px;font-weight:950;cursor:pointer;white-space:nowrap;letter-spacing:.1px;color:#eafff6;border:1px solid rgba(32,201,151,.42);background:linear-gradient(180deg,#123325,#0d241b);box-shadow:0 12px 28px rgba(0,0,0,.24),inset 0 0 0 1px rgba(255,255,255,.045),0 0 0 1px rgba(13,148,107,.08);transition:transform .16s ease,filter .16s ease,border-color .16s ease,box-shadow .16s ease}.fileBtn{position:relative;overflow:hidden}.fileBtn:before,.sheetBtn:before{content:"";position:absolute;inset:1px;border-radius:15px;background:linear-gradient(90deg,rgba(45,212,191,.12),rgba(0,255,102,.06));pointer-events:none}.sheetBtn{position:relative}.fileBtn:hover,.sheetBtn:hover{transform:translateY(-1px);border-color:rgba(45,212,191,.78);filter:brightness(1.08);box-shadow:0 14px 32px rgba(0,0,0,.28),0 0 22px rgba(32,201,151,.16),inset 0 0 0 1px rgba(255,255,255,.06)}.fileBtn:active,.sheetBtn:active{transform:translateY(0);filter:brightness(.98)}.fileBtn input{position:absolute;inset:0;opacity:0;cursor:pointer;z-index:3}.sheetBtn:disabled{opacity:.55;cursor:not-allowed;filter:none;transform:none}.sheetBtn .ico{display:inline-block;margin-right:2px;position:relative;z-index:1}.fileBtn,.sheetBtn span,.sheetBtn{font-size:14px}.status{color:var(--gold);font-size:13px;border:1px solid rgba(255,200,87,.3);background:rgba(255,200,87,.07);border-radius:999px;padding:10px 13px;white-space:nowrap}.filters{display:grid;grid-template-columns:repeat(4,minmax(150px,1fr));gap:12px;background:rgba(18,34,26,.88);border:1px solid var(--line);border-radius:24px;padding:16px;margin-bottom:16px}.fg label{display:block;color:var(--muted);font-size:12px;margin-bottom:7px}.fg input,.fg select{width:100%;background:#0d1b14;color:var(--text);border:1px solid var(--line);border-radius:14px;padding:11px 12px;outline:none}.fg input:focus,.fg select:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(0,255,102,.1)}
+    .score{display:grid;grid-template-columns:repeat(10,minmax(118px,1fr));gap:9px;margin-bottom:16px}.card{background:linear-gradient(180deg,var(--card),#0e1d15);border:1px solid var(--line);border-radius:18px;padding:12px 12px;box-shadow:0 12px 38px rgba(0,0,0,.22);min-width:0}.card .k{color:var(--muted);font-size:11px;margin-bottom:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.card .v{font-size:17px;font-weight:950;color:var(--green);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:-.35px;font-variant-numeric:tabular-nums}.card.gold .v{color:var(--gold)}.card.red .v{color:var(--red)}.grid{display:grid;grid-template-columns:minmax(0,1.85fr) minmax(380px,.95fr);gap:16px;margin-bottom:16px}.panel{background:rgba(18,34,26,.92);border:1px solid var(--line);border-radius:25px;box-shadow:var(--shadow);overflow:hidden}.ph{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:16px 18px;border-bottom:1px solid var(--line)}.ph b{font-size:18px}.ph span{color:var(--muted);font-size:12.5px}.tableWrap{overflow-x:hidden;overflow-y:auto;max-height:520px}table{width:100%;border-collapse:collapse;min-width:0;table-layout:fixed}th,td{padding:10px 11px;border-bottom:1px solid rgba(41,73,56,.72);font-size:12.4px;text-align:right;vertical-align:middle;line-height:1.35}th{position:sticky;top:0;background:#102019;color:var(--green2);z-index:1;text-transform:uppercase;font-size:10.5px;letter-spacing:.32px}th:first-child,td:first-child{text-align:left}.branch{font-weight:900;color:#fff}.muted{color:var(--muted)}.bad{color:var(--red)!important}.good{color:var(--green)!important}.warnText{color:var(--gold)!important}.evalBadge{display:inline-block;border:1px solid var(--line2);background:rgba(13,27,20,.75);border-radius:999px;padding:5px 8px;font-size:11.5px;font-weight:800;white-space:nowrap}.evalBadge.good{border-color:rgba(0,255,102,.45);background:rgba(0,255,102,.08)}.evalBadge.bad{border-color:rgba(255,92,122,.45);background:rgba(255,92,122,.08)}.evalBadge.warnText{border-color:rgba(255,200,87,.45);background:rgba(255,200,87,.08)}.insights{padding:16px;display:grid;gap:12px}.insight{border:1px solid var(--line);background:rgba(13,27,20,.72);border-radius:18px;padding:14px}.insight h3{margin:0 0 8px;font-size:14px}.insight ul{margin:0;padding-left:18px;color:#dfffea;font-size:13px;line-height:1.65}.insight.good h3{color:var(--green)}.insight.warn h3{color:var(--gold)}.insight.todo h3{color:var(--blue)}.charts{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.chartCard{background:rgba(18,34,26,.92);border:1px solid var(--line);border-radius:25px;box-shadow:var(--shadow);padding:18px}.chartTitle{display:flex;justify-content:space-between;gap:12px;margin-bottom:14px}.chartTitle b{font-size:16px}.chartTitle span{color:var(--muted);font-size:12px}.donutRow{display:grid;grid-template-columns:150px 1fr;gap:16px;align-items:center}.donut{width:150px;height:150px;border-radius:50%;background:#1b3025;position:relative;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}.donut:after{content:"";position:absolute;inset:32px;background:#0d1b14;border-radius:50%;border:1px solid var(--line)}.donutCenter{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;z-index:2;font-weight:950;color:var(--green);font-size:17px;line-height:1.05}.legend{display:grid;gap:9px}.li{display:grid;grid-template-columns:10px 1fr auto;gap:8px;align-items:center;color:#dfffea;font-size:13px}.dot{width:10px;height:10px;border-radius:50%}.li small{display:block;color:var(--muted);font-size:11px;margin-top:2px}.empty{padding:48px;text-align:center;color:var(--muted)}.note{margin-top:12px;color:var(--muted);font-size:12px;text-align:right}.kpiLine{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}.pill{border:1px solid var(--line2);background:#0d1b14;color:var(--muted);border-radius:999px;padding:7px 10px;font-size:12px}.pill strong{color:var(--gold)}
+
+    .trendPanel{background:rgba(18,34,26,.92);border:1px solid var(--line);border-radius:25px;box-shadow:var(--shadow);overflow:hidden;margin-bottom:16px}
+    .trendHead{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:16px 18px;border-bottom:1px solid var(--line)}
+    .trendHead b{font-size:18px}.trendHead span{color:var(--muted);font-size:12.5px}
+    .trendBody{display:grid;grid-template-columns:minmax(0,1fr) 280px;gap:16px;padding:18px}
+    .trendChartBox{background:linear-gradient(180deg,rgba(13,27,20,.82),rgba(7,16,12,.62));border:1px solid rgba(52,92,70,.75);border-radius:20px;padding:14px;min-height:365px}
+    .trendLegend{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:10px;color:#dfffea;font-size:12.5px}.trendLegend span{display:inline-flex;gap:7px;align-items:center}.trendDot{width:10px;height:10px;border-radius:50%;display:inline-block}.trendDot.data{background:#31fff2;box-shadow:0 0 12px rgba(49,255,242,.45)}.trendDot.cpl{background:var(--gold);box-shadow:0 0 12px rgba(255,200,87,.35)}.trendDot.kpi{background:transparent;border:1px dashed var(--red)}
+    .trendSvg{width:100%;height:310px;display:block;overflow:visible}.trendGrid{stroke:rgba(141,255,189,.13);stroke-width:1}.trendAxis{stroke:rgba(141,255,189,.35);stroke-width:1}.trendLineData{fill:none;stroke:#31fff2;stroke-width:4;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 7px rgba(49,255,242,.4))}.trendLineCpl{fill:none;stroke:#ffc857;stroke-width:3.5;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:8 7;filter:drop-shadow(0 0 6px rgba(255,200,87,.28))}.trendLineKpi{stroke:rgba(255,92,122,.8);stroke-width:2;stroke-dasharray:7 7}.trendPointData{fill:#31fff2;stroke:#092018;stroke-width:3}.trendPointCpl{fill:#ffc857;stroke:#092018;stroke-width:3}.trendText{fill:#dfffea;font-size:12px;font-weight:800}.trendText.muted{fill:#92b69d;font-size:11px;font-weight:600}.trendText.data{fill:#31fff2}.trendText.cpl{fill:#ffc857}.trendText.bad{fill:#ff5c7a}.trendSide{display:grid;grid-template-columns:1fr;gap:11px}.trendMini{border:1px solid var(--line);background:rgba(13,27,20,.72);border-radius:18px;padding:13px 14px}.trendMini .k{color:var(--muted);font-size:11.5px;margin-bottom:7px}.trendMini .v{font-size:20px;font-weight:950;color:var(--green);letter-spacing:-.35px}.trendMini .v.gold{color:var(--gold)}.trendMini .v.blue{color:#31fff2}.trendMini .sub{font-size:11.5px;color:#dfffea;margin-top:4px;line-height:1.4}.trendEmpty{padding:58px 20px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:18px;background:rgba(13,27,20,.5)}
+
+    .pacePanel{background:rgba(18,34,26,.92);border:1px solid var(--line);border-radius:25px;box-shadow:var(--shadow);overflow:hidden;margin-bottom:16px}
+    .paceHeader{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:16px 18px;border-bottom:1px solid var(--line)}
+    .paceHeader b{font-size:18px}.paceHeader span{color:var(--muted);font-size:12.5px}
+    .paceTop{display:grid;grid-template-columns:180px 1fr;gap:18px;padding:16px 18px;align-items:center}
+    .paceMainCard{border:1px solid rgba(0,255,102,.45);background:linear-gradient(180deg,rgba(0,255,230,.08),rgba(0,255,102,.06));border-radius:17px;padding:18px 16px;text-align:center;box-shadow:inset 0 0 0 1px rgba(255,255,255,.04)}
+    .paceMainCard .label{font-weight:900;font-size:13px;margin-bottom:9px}.paceMainCard .date{color:var(--muted);font-size:12px;margin-bottom:10px}.paceMainCard .percent{font-weight:950;font-size:32px;letter-spacing:-.8px;color:#31fff2;text-shadow:0 0 18px rgba(49,255,242,.25)}
+    .paceBarWrap{display:grid;gap:13px}.paceBar{height:12px;border-radius:999px;background:#0d1b14;border:1px solid var(--line);overflow:hidden}.paceFill{height:100%;width:0%;border-radius:999px;background:linear-gradient(90deg,#31fff2,#00ff66);box-shadow:0 0 18px rgba(0,255,102,.28)}
+    .paceDesc{color:#bfe7c8;font-size:13px;line-height:1.55}.paceCards{display:grid;grid-template-columns:repeat(5,minmax(135px,1fr));gap:12px;padding:0 18px 16px}
+    .paceMini{background:linear-gradient(180deg,var(--card),#0e1d15);border:1px solid var(--line);border-radius:17px;padding:13px 12px;min-height:96px}.paceMini .k{color:var(--muted);font-size:11.5px;margin-bottom:8px}.paceMini .v{font-size:20px;font-weight:950;color:var(--green);letter-spacing:-.4px}.paceMini .v.gold{color:var(--gold)}.paceMini .v.red{color:var(--red)}.paceMini .sub{color:#dfffea;font-size:11.5px;line-height:1.45;margin-top:5px;word-break:break-word}
+    .paceTableWrap{padding:0 0 4px;overflow-x:auto}.paceTable{width:100%;border-collapse:collapse;table-layout:fixed}.paceTable th,.paceTable td{padding:10px 11px;border-bottom:1px solid rgba(41,73,56,.72);font-size:12.2px;text-align:right}.paceTable th{background:#102019;color:var(--green2);text-transform:uppercase;font-size:10.2px;letter-spacing:.32px}.paceTable th:first-child,.paceTable td:first-child{text-align:left}.paceStatus{display:inline-block;border-radius:999px;padding:5px 9px;font-size:11.5px;font-weight:900;border:1px solid var(--line2);white-space:nowrap}.paceStatus.good{color:var(--green);background:rgba(0,255,102,.08);border-color:rgba(0,255,102,.4)}.paceStatus.bad{color:var(--red);background:rgba(255,92,122,.08);border-color:rgba(255,92,122,.4)}.paceStatus.warnText{color:var(--gold);background:rgba(255,200,87,.08);border-color:rgba(255,200,87,.4)}
+
+
+    .sheetModal{position:fixed;inset:0;background:rgba(0,0,0,.62);backdrop-filter:blur(7px);z-index:9999;display:none;align-items:center;justify-content:center;padding:18px}.sheetModal.show{display:flex}.sheetModalCard{width:min(620px,100%);background:linear-gradient(180deg,#12221a,#0b1711);border:1px solid var(--line2);border-radius:24px;box-shadow:0 28px 90px rgba(0,0,0,.55);overflow:hidden}.sheetModalHead{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:18px 20px;border-bottom:1px solid var(--line)}.sheetModalHead b{font-size:18px}.sheetClose{border:1px solid var(--line2);background:#0d1b14;color:var(--muted);border-radius:12px;width:36px;height:36px;cursor:pointer;font-weight:950}.sheetModalBody{padding:18px 20px;display:grid;gap:12px}.sheetModalBody label{font-size:12px;color:var(--muted);font-weight:800}.sheetInput{width:100%;background:#0d1b14;color:var(--text);border:1px solid var(--line);border-radius:14px;padding:13px 14px;outline:none}.sheetInput:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(108,199,255,.1)}.sheetHelp{font-size:12.5px;line-height:1.55;color:#bfe7c8}.sheetModalActions{display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap;padding:0 20px 20px}.sheetGhost{border:1px solid var(--line2);background:#0d1b14;color:var(--text);border-radius:14px;padding:11px 14px;font-weight:900;cursor:pointer}.sheetPrimary{border:1px solid rgba(0,255,102,.48);background:rgba(0,255,102,.12);color:var(--green);border-radius:14px;padding:11px 14px;font-weight:950;cursor:pointer}
+
+    @media(max-width:1450px){.score{grid-template-columns:repeat(5,1fr)}.grid{grid-template-columns:1fr}.charts{grid-template-columns:1fr}.donutRow{grid-template-columns:150px 1fr}.paceCards{grid-template-columns:repeat(3,1fr)}.trendBody{grid-template-columns:1fr}.trendSide{grid-template-columns:repeat(4,1fr)}}
+    @media(max-width:860px){.wrap{padding:14px}.top{grid-template-columns:1fr}.score,.filters{grid-template-columns:1fr}.donutRow{grid-template-columns:1fr}.uploadBox{justify-content:flex-start}.title h1{font-size:25px}.paceTop{grid-template-columns:1fr}.paceCards{grid-template-columns:1fr}.paceTable{min-width:980px}.trendSide{grid-template-columns:1fr}.trendBody{padding:14px}.trendSvg{height:290px}}
+  .adminOnly{display:none!important}.adminMode .adminOnly{display:inline-flex!important}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="top">
+      <div class="title">
+        <h1>TỔNG QUAN GOOGLE ADS</h1>
+        <p>Dashboard đọc file KPI Google Ads nội bộ theo <b>Ngày</b>, <b>Tháng</b> và <b>Khu vực</b>. Scorecard lấy từ <b>Budget KPIs</b>; bảng ngày lấy từ <b>Budget Ngày</b>.</p>
+        <div class="kpiLine">
+          <span class="pill">Nguồn tháng: <strong id="monthSourceText">0 sheet</strong></span>
+          <span class="pill">Nguồn ngày: <strong id="daySourceText">0 sheet</strong></span>
+        </div>
+      </div>
+      <div class="uploadBox">
+        <label class="fileBtn">Import excel (xlsx)<input type="file" id="fileInput" accept=".xlsx,.xls"></label>
+        <button class="sheetBtn" id="refreshSheetBtn" type="button"><span class="ico">↻</span>Cập nhật ngay</button>
+        <button class="sheetBtn adminOnly" id="connectSheetBtn" type="button"><span class="ico">⚙</span>Kết nối Sheet</button>
+        <div class="status" id="status">Chưa có dữ liệu</div>
+      </div>
+    </section>
+
+    <section class="filters">
+      <div class="fg"><label>Ngày từ</label><input type="date" id="fromDate"></div>
+      <div class="fg"><label>Ngày đến</label><input type="date" id="toDate"></div>
+      <div class="fg"><label>Tháng</label><select id="monthFilter"></select></div>
+      <div class="fg"><label>Khu vực</label><select id="regionFilter"></select></div>
+    </section>
+
+    <section class="score" id="scorecards"></section>
+
+    <section class="pacePanel" id="pacePanel"></section>
+
+    <section class="grid">
+      <div class="panel">
+        <div class="ph"><b id="tableTitle">Bảng tổng quan Google Ads</b><span id="tableHint">Chưa có dữ liệu</span></div>
+        <div class="tableWrap"><table id="mainDataTable"><colgroup id="mainColGroup"></colgroup><thead id="mainHead"></thead><tbody id="mainTable"><tr><td colspan="14" class="empty">Tải file Excel KPI để bắt đầu phân tích</td></tr></tbody></table></div>
+      </div>
+      <div class="panel"><div class="ph"><b>AI đánh giá Performance</b><span>Theo bộ lọc hiện tại</span></div><div class="insights" id="insights"></div></div>
+    </section>
+
+
+    <section class="trendPanel" id="trendPanel"></section>
+
+    <section class="charts"><div class="chartCard" id="chartRegion"></div><div class="chartCard" id="chartData"></div><div class="chartCard" id="chartMonth"></div></section>
+
+    <div class="sheetModal" id="sheetModal" aria-hidden="true">
+      <div class="sheetModalCard">
+        <div class="sheetModalHead"><b>Kết nối Google Sheet</b><button class="sheetClose" id="closeSheetModal" type="button">×</button></div>
+        <div class="sheetModalBody">
+          <div>
+            <label for="sheetUrlInput">Apps Script Web App URL /exec</label>
+            <input class="sheetInput" id="sheetUrlInput" placeholder="https://script.google.com/macros/s/.../exec" autocomplete="off">
+          </div>
+          <div class="sheetHelp">Dán URL triển khai Apps Script dạng <b>/exec</b>. Dashboard đã được gắn sẵn URL Apps Script cố định. Mục này chỉ dùng khi cần kiểm tra hoặc thay đổi kết nối trên máy cá nhân.</div>
+        </div>
+        <div class="sheetModalActions"><button class="sheetGhost" id="cancelSheetModal" type="button">Hủy</button><button class="sheetPrimary" id="saveSheetUrl" type="button">Lưu kết nối</button></div>
+      </div>
+    </div>
+    <div class="note">File chạy trực tiếp trên trình duyệt. Có thể import Excel hoặc cập nhật từ Google Sheet qua Apps Script.</div>
+  </div>
+
+<script>
+const COLOR=["#00ff66","#ffc857","#6cc7ff","#ff5c7a","#a78bfa","#34d399","#f472b6","#fb923c","#22d3ee","#eab308"];
+// Khi có URL Apps Script cố định, dán vào đây để mở dashboard là có thể bấm “Cập nhật ngay” ngay.
+// Ví dụ: const FIXED_APPS_SCRIPT_URL="https://script.google.com/macros/s/AKfycb.../exec";
+const FIXED_APPS_SCRIPT_URL="https://script.google.com/macros/s/AKfycbx2LE-cR3sLrGMOCRD9mIR5lI0BRVZ-J5pKEtTJaB5y6nC4ksHB-DIiyBpn8hdW6N4eVg/exec";
+const ADMIN_MODE = new URLSearchParams(location.search).get("admin") === "1";
+if(ADMIN_MODE){ document.documentElement.classList.add("adminMode"); }
+const SHEET_URL_STORAGE_KEY="google_ads_kpi_apps_script_url";
+let monthlyRecords=[],dailyRecords=[],state={},sourceInfo={monthSheets:0,daySheets:0};
+const $=id=>document.getElementById(id);
+function norm(s){return String(s??"").trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/đ/g,"d").replace(/\s+/g," ")}
+function txt(s){return String(s??"").trim()}
+function esc(s){return String(s??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;")}
+const DEFAULT_REGION_ORDER=["MIỀN BẮC","ĐÔNG NAM BỘ","TÂY NGUYÊN","MIỀN TRUNG","HỒ CHÍ MINH","MIỀN TÂY","QUẬN 10","BLANK","PHÒNG KHÁM"];
+let REGION_ORDER=[...DEFAULT_REGION_ORDER];
+function canonicalRegion(s){
+  let raw=txt(s).replace(/\s+/g," ");let n=norm(raw);
+  const map={"mien bac":"MIỀN BẮC","dong nam bo":"ĐÔNG NAM BỘ","tay nguyen":"TÂY NGUYÊN","mien trung":"MIỀN TRUNG","hcm":"HỒ CHÍ MINH","ho chi minh":"HỒ CHÍ MINH","tp ho chi minh":"HỒ CHÍ MINH","tphcm":"HỒ CHÍ MINH","mien tay":"MIỀN TÂY","quan 10":"QUẬN 10","q10":"QUẬN 10","blank":"BLANK","phong kham":"PHÒNG KHÁM"};
+  return map[n]||raw;
+}
+function cleanRegion(s){return canonicalRegion(s)}
+function isWantedRegion(r){return REGION_ORDER.includes(canonicalRegion(r))}
+function regionRank(r){let i=REGION_ORDER.indexOf(canonicalRegion(r));return i>=0?i:999}
+function regionSort(a,b){let ra=regionRank(a),rb=regionRank(b);return ra!==rb?ra-rb:String(a).localeCompare(String(b),"vi")}
+function isSkipRegion(r){let n=norm(r);return !n||n==="tong"||n==="bonus"||n==="total"||n==="tong cong"||n==="khu vuc"||n==="khu vực"}
+function parseRegionCatalog(rows){
+  const out=[];
+  for(const row of rows||[]){
+    for(const cell of row||[]){
+      const region=cleanRegion(cell);
+      const n=norm(region);
+      if(!n||isSkipRegion(region))continue;
+      if(n.includes("kpi")||n.includes("chi phi")||n.includes("data")||n.includes("doanh")||n.includes("roas")||n.includes("cir")||n.includes("thang")||/^\d/.test(n))continue;
+      if(!out.includes(region))out.push(region);
+      break;
+    }
+  }
+  return out;
+}
+function setRegionOrderFromWorkbook(wb){
+  let catalog=[];
+  for(const name of wb.SheetNames){
+    const n=norm(name);
+    if(n.includes("danh muc")||n.includes("khu vuc")){
+      const rows=XLSX.utils.sheet_to_json(wb.Sheets[name],{header:1,defval:"",raw:true});
+      catalog.push(...parseRegionCatalog(rows));
+    }
+  }
+  const merged=[];
+  for(const r of [...DEFAULT_REGION_ORDER,...catalog]){
+    const cr=canonicalRegion(r);
+    if(cr&&!merged.includes(cr))merged.push(cr);
+  }
+  REGION_ORDER=merged;
+}
+function toNum(v){
+  if(typeof v==="number"&&isFinite(v))return v;
+  if(v instanceof Date)return 0;
+  let s=String(v??"").trim();
+  if(!s||s.startsWith("=")||s.includes("#DIV")||s.includes("#VALUE")||s.includes("#N/A"))return 0;
+  let neg=/^\(.+\)$/.test(s);
+  s=s.replace(/[₫đĐ\s%]/g,"").replace(/[()]/g,"").replace(/[^0-9,.\-]/g,"");
+  if(!s)return 0;
+  if(s.includes(".")&&s.includes(",")){
+    s=s.lastIndexOf(",")>s.lastIndexOf(".")?s.replace(/\./g,"").replace(",","."):s.replace(/,/g,"");
+  }else if(s.includes(".")){
+    if((s.match(/\./g)||[]).length>1){s=s.replace(/\./g,"")}
+    else{let p=s.split(".");if(p[1]?.length===3&&p[0].replace("-","").length>=1)s=p[0]+p[1]}
+  }else if(s.includes(",")){
+    if((s.match(/,/g)||[]).length>1){s=s.replace(/,/g,"")}
+    else{let p=s.split(",");s=(p[1]?.length===3&&p[0].replace("-","").length>=1)?p[0]+p[1]:p[0]+"."+p[1]}
+  }
+  let n=Number(s);if(!isFinite(n))return 0;return neg?-n:n
+}
+function toPct(v){
+  if(typeof v==="number"&&isFinite(v))return Math.abs(v)>1?v/100:v;
+  let raw=String(v??"").trim(); if(!raw)return 0;
+  let n=toNum(v); if(!isFinite(n))return 0;
+  if(raw.includes("%"))return n/100;
+  return Math.abs(n)>1?n/100:n;
+}
+function shortDecimal(value,max=2){return Number(value||0).toLocaleString("vi-VN",{maximumFractionDigits:max})}
+function vnd(n){
+  n=Number(n)||0;
+  const sign=n<0?"-":"";
+  const abs=Math.abs(n);
+  if(abs>=1000000000)return sign+shortDecimal(abs/1000000000,2)+" tỷ";
+  if(abs>=1000000)return sign+shortDecimal(abs/1000000,1)+" tr";
+  return sign+Math.round(abs).toLocaleString("vi-VN")
+}
+function num(n){return Math.round(Number(n)||0).toLocaleString("vi-VN")}
+function div(a,b){a=Number(a)||0;b=Number(b)||0;return b?a/b:0}
+function pct(n){n=Number(n)||0;return (n*100).toFixed(1).replace(".0","")+"%"}
+function moneyCell(n){return Number(n)? vnd(n):"-"}
+function vndFull(n){
+  n=Number(n)||0;
+  if(!n)return "0 ₫";
+  const sign=n<0?"-":"";
+  return sign+Math.round(Math.abs(n)).toLocaleString("vi-VN")+" ₫";
+}
+function moneyFullCell(n){return Number(n)? vndFull(n):"-"}
+function moneyScore(n){
+  n=Number(n)||0;
+  if(!n)return "-";
+  const sign=n<0?"-":"";
+  const abs=Math.abs(n);
+  if(abs>=1000000000){
+    return sign+(abs/1000000000).toLocaleString("vi-VN",{maximumFractionDigits:2})+" tỷ";
+  }
+  if(abs>=1000000){
+    const tr=abs/1000000;
+    const max=tr>=100?1:2;
+    return sign+tr.toLocaleString("vi-VN",{maximumFractionDigits:max})+" tr";
+  }
+  return sign+Math.round(abs).toLocaleString("vi-VN")+" ₫";
+}
+function pctCell(n){return Number(n)?pct(n):"-"}
+function pct2(n){n=Number(n)||0;return (n*100).toFixed(2).replace(".",",")+"%"}
+function pct2Cell(n){return Number(n)?pct2(n):"-"}
+function dataCell(n){return Math.round(Number(n)||0).toLocaleString("vi-VN")}
+function roasCell(n){return Number(n)?Number(n).toFixed(2).replace(/\.00$/,"")+"x":"-"}
+function monthOf(d){return d?d.slice(0,7):""}
+function monthLabel(m){if(!m)return"Chưa xác định";let [y,mm]=m.split("-");return `T${Number(mm)}/${y}`}
+function fmtDateUTC(dt){return `${dt.getUTCFullYear()}-${String(dt.getUTCMonth()+1).padStart(2,"0")}-${String(dt.getUTCDate()).padStart(2,"0")}`}
+function fmtDateLocal(dt){return `${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,"0")}-${String(dt.getDate()).padStart(2,"0")}`}
+function addDaysISO(iso,days){
+  if(!iso)return"";
+  const [y,m,d]=iso.split("-").map(Number);
+  const x=new Date(Date.UTC(y,m-1,d+days));
+  return fmtDateUTC(x);
+}
+function excelSerialToISO(v){
+  // Đọc trực tiếp serial date của Excel để tránh lỗi SheetJS/Timezone làm 01/06 thành 31/05.
+  // Excel 1900 date system: 25569 = 1970-01-01.
+  const n=Number(v);
+  if(!isFinite(n))return"";
+  const whole=Math.floor(n);
+  const ms=(whole-25569)*86400000;
+  return fmtDateUTC(new Date(ms));
+}
+function dateNorm(v){
+  if(v===null||v===undefined||v==="")return"";
+  // Nếu Excel trả về serial number, tự convert, không dùng XLSX.SSF.parse_date_code.
+  if(typeof v==="number")return excelSerialToISO(v);
+  // Nếu Excel trả về Date object, dùng LOCAL getter để tránh lỗi timezone Việt Nam làm 01/06 thành 31/05.
+  if(v instanceof Date&&!isNaN(v)){
+    return fmtDateLocal(v);
+  }
+  let s=txt(v);
+  // Một số file export có thể trả serial date dưới dạng text.
+  if(/^\d{5}(?:\.\d+)?$/.test(s))return excelSerialToISO(Number(s));
+  if(/^\d{4}-\d{1,2}-\d{1,2}/.test(s)){let[a,b,c]=s.slice(0,10).split("-").map(Number);return valid(a,b,c)}
+  if(/^\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}$/.test(s)){let[d,m,y]=s.split(/[\/\-]/).map(Number);if(y<100)y+=2000;return valid(y,m,d)||valid(y,d,m)}
+  let p=new Date(s);
+  if(!isNaN(p))return fmtDateUTC(p);
+  return "";
+}
+function valid(y,m,d){let x=new Date(Date.UTC(y,m-1,d));return x.getUTCFullYear()===y&&x.getUTCMonth()===m-1&&x.getUTCDate()===d?fmtDateUTC(x):""}
+function parseMonthFromName(name, rows){
+  let m=String(name).match(/T\s*(\d{1,2})\s*\.?\s*(\d{4})/i);
+  if(m)return `${m[2]}-${String(Number(m[1])).padStart(2,"0")}`;
+  let range=txt(rows?.[1]?.[1]||"");let r=range.match(/(\d{1,2})\/(\d{1,2})\s*-\s*(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+  if(r)return `${r[5]}-${String(Number(r[2])).padStart(2,"0")}`;
+  return "";
+}
+function parseMonthlySheet(sheetName, rows){
+  if(norm(sheetName).includes("ban sao"))return [];
+  let headerRow=rows.findIndex(r=>norm(r?.[0])==="khu vuc");
+  if(headerRow<0)return [];
+  let headerText=(rows[headerRow]||[]).map(x=>norm(x)).join(" |");
+  if(!headerText.includes("kpi chi phi") || !headerText.includes("thuc chay chi phi"))return [];
+  let month=parseMonthFromName(sheetName,rows), dateRange=txt(rows?.[1]?.[1]||"");
+  let out=[];
+  for(let i=headerRow+1;i<rows.length;i++){
+    let r=rows[i]||[], region=cleanRegion(r[0]);
+    if(isSkipRegion(region))continue;
+    if(!isWantedRegion(region))continue;
+    out.push({
+      source:"month", sheet:sheetName, month, monthLabel:monthLabel(month), dateRange, region,
+      kpiCost:toNum(r[1]), cost:toNum(r[2]), remaining:toNum(r[3]), costPct:toPct(r[4]),
+      kpiData:toNum(r[5]), data:toNum(r[6]), dataPct:toPct(r[7]),
+      kpiCpl:toNum(r[8]), cpl:toNum(r[9]), cplPct:toPct(r[10]),
+      kpiRevenue:toNum(r[11]), revenue:toNum(r[12]), revenuePct:toPct(r[13]),
+      kpiCir:toPct(r[14]), cir:toPct(r[15]), cirPct:toPct(r[16]),
+      revenueNewNew:toNum(r[17]), cirNew:toPct(r[18]), kpiRoas:toNum(r[19]),
+      roasNewNew:toNum(r[20]), roasPct:toPct(r[21]), revenueNew:toNum(r[22]), diff:toNum(r[23]), roasNew:toNum(r[24]),
+      count:1, regions:new Set([region])
+    });
+  }
+  return out;
+}
+function findDailyHeader(rows, sheetMonth=""){
+  // Dò dòng chứa các cột ngày thay vì cố định dòng 1, để đọc được file thô có thêm tiêu đề/phần ghi chú.
+  let best={rowIndex:-1,dateCols:[]};
+  for(let r=0;r<Math.min(rows.length,12);r++){
+    const row=rows[r]||[];
+    let cols=[];
+    for(let c=0;c<row.length;c++){
+      let d=dateNorm(row[c]);
+      // Bỏ qua các cột mô tả như KHU VỰC / CHỈ SỐ / GHI CHÚ / TOTAL, chỉ nhận các cột ngày thật.
+      if(d&&c>=3)cols.push({c,date:d,month:monthOf(d)});
+    }
+    if(cols.length){
+      // Nếu cả dòng header bị lệch lùi 1 ngày do timezone, ví dụ sheet T6 nhưng cột đầu hiện 31/05, dịch toàn bộ +1 ngày.
+      if(sheetMonth && cols[0].date.slice(0,7)!==sheetMonth && addDaysISO(cols[0].date,1).slice(0,7)===sheetMonth){
+        cols=cols.map(x=>{const nd=addDaysISO(x.date,1);return {...x,date:nd,month:monthOf(nd)}});
+      }
+      // Nếu sheet có tháng trong tên, chỉ giữ ngày thuộc đúng tháng đó để tránh phát sinh 31/05 ngoài ý muốn.
+      if(sheetMonth)cols=cols.filter(x=>x.date.slice(0,7)===sheetMonth);
+    }
+    if(cols.length>best.dateCols.length)best={rowIndex:r,dateCols:cols};
+  }
+  return best;
+}
+function detectDailyMetric(row){
+  // Quét 4 cột đầu để tránh lỗi file thô bị lệch cột hoặc dòng metric nằm ở cột A/B/C.
+  for(let c=0;c<Math.min(4,row.length);c++){
+    const n=norm(row[c]);
+    if(!n)continue;
+    if(n.includes("tong chi phi ngay"))return {kind:"cost",idx:c};
+    if(n.includes("so data"))return {kind:"data",idx:c};
+    if(n.includes("ti le")&&n.includes("data"))return {kind:"rateDataTotal",idx:c};
+    if(n.includes("chi phi")&&n.includes("data")&&!n.includes("tong"))return {kind:"cplSource",idx:c};
+  }
+  return null;
+}
+function parseDailySheet(sheetName, rows){
+  if(norm(sheetName).includes("ban sao"))return [];
+  const sheetMonth=parseMonthFromName(sheetName,rows);
+  const found=findDailyHeader(rows, sheetMonth);
+  const dateCols=found.dateCols;
+  if(found.rowIndex<0||!dateCols.length)return [];
+
+  // Sheet BUDGET NGÀY không bắt buộc có hàng tổng.
+  // Dashboard tự đọc theo từng block khu vực và tự cộng theo ngày/khu vực.
+  // Fix quan trọng: chỉ cập nhật currentRegion khi cột A thật sự là khu vực.
+  // Nhờ vậy nếu file thô đặt dòng "SỐ DATA", "TỈ LỆ", "CHI PHÍ/1 DATA" ở cột A thì không làm mất khu vực hiện tại.
+  let map=new Map(), currentRegion="";
+  for(let r=found.rowIndex+1;r<rows.length;r++){
+    let row=rows[r]||[];
+    let possibleRegion=cleanRegion(row[0]);
+    if(isWantedRegion(possibleRegion))currentRegion=possibleRegion;
+
+    const metric=detectDailyMetric(row);
+    if(!metric)continue;
+    if(isSkipRegion(currentRegion)||!isWantedRegion(currentRegion))continue;
+
+    for(const dc of dateCols){
+      let key=currentRegion+"|"+dc.date;
+      if(!map.has(key))map.set(key,{source:"day",sheet:sheetName,date:dc.date,month:dc.month,monthLabel:monthLabel(dc.month),region:currentRegion,cost:0,data:0,rateDataTotal:0,cplSource:0,cpl:0,count:1,regions:new Set([currentRegion])});
+      let obj=map.get(key);
+      obj[metric.kind]+=toNum(row[dc.c]);
+    }
+  }
+  return [...map.values()].map(x=>{
+    // Ưu tiên Data nhập trực tiếp. Nếu Data trống nhưng file có dòng CHI PHÍ/1 DATA hợp lệ thì suy ngược Data = Cost / CPL.
+    if(!x.data && x.cost && x.cplSource)x.data=div(x.cost,x.cplSource);
+    x.cpl=div(x.cost,x.data)||x.cplSource||0;
+    return x;
+  }).filter(x=>x.cost||x.data||x.cplSource||x.rateDataTotal);
+}
+function readWorkbook(wb){
+  monthlyRecords=[];dailyRecords=[];sourceInfo={monthSheets:0,daySheets:0};
+  REGION_ORDER=[...DEFAULT_REGION_ORDER];
+  setRegionOrderFromWorkbook(wb);
+  wb.SheetNames.forEach(name=>{
+    const rows=XLSX.utils.sheet_to_json(wb.Sheets[name],{header:1,defval:"",raw:true});
+    const n=norm(name);
+    if(n.includes("budget kpis")&&!n.includes("ban sao")){
+      const parsed=parseMonthlySheet(name,rows);if(parsed.length){monthlyRecords.push(...parsed);sourceInfo.monthSheets++;}
+    }
+    if(n.includes("budget ngay")&&!n.includes("ban sao")){
+      const parsed=parseDailySheet(name,rows);if(parsed.length){dailyRecords.push(...parsed);sourceInfo.daySheets++;}
+    }
+  });
+  buildFilters();calculate();
+  $("status").textContent=`Đã đọc ${num(monthlyRecords.length)} dòng tháng · ${num(dailyRecords.length)} dòng ngày`;
+  $("monthSourceText").textContent=`${sourceInfo.monthSheets} sheet`;
+  $("daySourceText").textContent=`${sourceInfo.daySheets} sheet`;
+}
+function fill(id,arr){$(id).innerHTML=arr.map(v=>`<option value="${esc(v)}">${esc(v)}</option>`).join("")}
+function buildFilters(){
+  const months=Array.from(new Set([...monthlyRecords.map(x=>x.month),...dailyRecords.map(x=>x.month)].filter(Boolean))).sort();
+  const recordRegions=Array.from(new Set([...monthlyRecords.map(x=>x.region),...dailyRecords.map(x=>x.region)].filter(Boolean)));
+  const regions=[...REGION_ORDER.filter(r=>recordRegions.includes(r)),...recordRegions.filter(r=>!REGION_ORDER.includes(r)).sort((a,b)=>String(a).localeCompare(String(b),"vi"))];
+  fill("monthFilter",["Tất cả",...months.map(monthLabel)]);
+  fill("regionFilter",["Tất cả",...regions]);
+  let dates=dailyRecords.map(x=>x.date).filter(Boolean).sort();
+  $("fromDate").value=dates[0]||"";$("toDate").value=dates[dates.length-1]||"";
+  syncState();
+}
+function syncState(){
+  state={from:$("fromDate").value,to:$("toDate").value,monthText:$("monthFilter").value,region:$("regionFilter").value,group:"date"};
+  state.month=state.monthText==="Tất cả"?"":state.monthText.replace(/^T(\d+)\/(\d{4})$/,(m,mm,y)=>`${y}-${String(Number(mm)).padStart(2,"0")}`);
+}
+function passMonth(r){return (!state.month||r.month===state.month)&& (state.region==="Tất cả"||r.region===state.region)}
+function passDay(r){if(state.from&&r.date<state.from)return false;if(state.to&&r.date>state.to)return false;return (!state.month||r.month===state.month)&&(state.region==="Tất cả"||r.region===state.region)}
+function blank(name){return{name,kpiCost:0,cost:0,remaining:0,costPct:0,kpiData:0,data:0,dataPct:0,kpiCpl:0,cpl:0,cplPct:0,kpiRevenue:0,revenue:0,revenuePct:0,kpiCir:0,cir:0,cirPct:0,revenueNewNew:0,cirNew:0,kpiRoas:0,roasNewNew:0,roasPct:0,revenueNew:0,diff:0,roasNew:0,rateDataTotal:0,cplSource:0,count:0,regions:new Set()}}
+function addMonth(g,r){g.kpiCost+=r.kpiCost;g.cost+=r.cost;g.kpiData+=r.kpiData;g.data+=r.data;g.kpiRevenue+=r.kpiRevenue;g.revenue+=r.revenue;g.revenueNewNew+=r.revenueNewNew;g.revenueNew+=r.revenueNew;g.diff+=r.diff;g.count+=r.count||1;g.regions.add(r.region)}
+function finalizeMonth(g){
+  g.remaining=g.kpiCost-g.cost;
+  g.costPct=div(g.cost,g.kpiCost);g.dataPct=div(g.data,g.kpiData);
+  g.kpiCpl=div(g.kpiCost,g.kpiData);g.cpl=div(g.cost,g.data);g.cplPct=div(g.cpl,g.kpiCpl);
+  g.revenuePct=div(g.revenue,g.kpiRevenue);
+  g.kpiCir=div(g.kpiCost,g.kpiRevenue);g.cir=div(g.cost,g.revenue);g.cirPct=div(g.cir,g.kpiCir);
+  g.cirNew=div(g.cost,g.revenueNewNew);
+  g.kpiRoas=div(g.kpiRevenue,g.kpiCost);g.roasNewNew=div(g.revenueNewNew,g.cost);g.roasPct=div(g.roasNewNew,g.kpiRoas);g.roasNew=div(g.revenueNew,g.cost);
+  return g
+}
+function addDay(g,r){g.cost+=r.cost;g.data+=r.data;g.rateDataTotal+=r.rateDataTotal;g.count+=1;g.regions.add(r.region)}
+function finalizeDay(g){g.cpl=div(g.cost,g.data)||g.cplSource;return g}
+function aggregateMonthly(rows,keyFn){let map=new Map();rows.forEach(r=>{let k=keyFn(r);if(!map.has(k))map.set(k,blank(k));addMonth(map.get(k),r)});return [...map.values()].map(finalizeMonth)}
+function aggregateDaily(rows,keyFn){let map=new Map();rows.forEach(r=>{let k=keyFn(r);if(!map.has(k))map.set(k,blank(k));addDay(map.get(k),r)});return [...map.values()].map(finalizeDay)}
+function currentRows(){
+  syncState();
+  if(state.group==="date")return aggregateDaily(dailyRecords.filter(passDay),r=>r.date).sort((a,b)=>a.name.localeCompare(b.name));
+  if(state.group==="month")return aggregateMonthly(monthlyRecords.filter(passMonth),r=>r.monthLabel).sort((a,b)=>a.name.localeCompare(b.name,"vi"));
+  return aggregateMonthly(monthlyRecords.filter(passMonth),r=>r.region).sort((a,b)=>regionSort(a.name,b.name));
+}
+function scoreRows(){
+  syncState();
+  if(state.group==="date"){
+    let months=new Set();
+    if(state.month)months.add(state.month);
+    else dailyRecords.filter(passDay).forEach(r=>months.add(r.month));
+    return monthlyRecords.filter(r=>(!months.size||months.has(r.month))&&(state.region==="Tất cả"||r.region===state.region));
+  }
+  return monthlyRecords.filter(passMonth);
+}
+function scoreSummary(){
+  let s=blank("Tổng");
+  scoreRows().forEach(r=>addMonth(s,r));
+  return finalizeMonth(s);
+}
+function tableSummary(rows){
+  let s=blank("Bảng");
+  if(state.group==="date"){rows.forEach(r=>addDay(s,r));return finalizeDay(s)}
+  rows.forEach(r=>addMonth(s,r));return finalizeMonth(s);
+}
+
+function formatDateVN(d){if(!d)return"-";let [y,m,dd]=d.split("-");return `${dd}/${m}/${y}`}
+function daysInMonth(y,m){return new Date(Number(y),Number(m),0).getDate()}
+function getProgressInfo(){
+  syncState();
+  let d=state.to||dailyRecords.map(x=>x.date).filter(Boolean).sort().pop()||"";
+  if(!d&&state.month){let [y,m]=state.month.split("-");d=`${y}-${m}-${daysInMonth(y,m)}`}
+  if(!d)return {date:"",day:0,total:0,pct:0,monthNo:"-"};
+  let [y,m,day]=d.split("-").map(Number), total=daysInMonth(y,m), pctVal=total?Math.min(Math.max(day/total,0),1):0;
+  return {date:d,day,total,pct:pctVal,monthNo:String(m)};
+}
+function metricMoneyLabel(kind,n){
+  if(kind==="data")return dataCell(n);
+  if(kind==="roas")return roasCell(n);
+  if(kind==="pct")return pct2Cell(n);
+  return moneyFullCell(n);
+}
+function metricCompact(kind,n){
+  if(kind==="data")return dataCell(n);
+  if(kind==="roas")return roasCell(n);
+  if(kind==="pct")return pct2Cell(n);
+  return moneyScore(n);
+}
+function paceRow(name,kind,kpi,actual,progress,mode){
+  kpi=Number(kpi)||0; actual=Number(actual)||0;
+  let actualPct=div(actual,kpi), need=0, delta=0, deltaText="-", status="-", cls="warnText", progressText=pct2(progress);
+  if(mode==="lower"){
+    need=kpi;
+    delta=kpi-actual;
+    progressText="≤ KPI";
+    if(!actual||!kpi){deltaText="-";status="Thiếu dữ liệu";cls="warnText";}
+    else if(actual<=kpi){deltaText=`Tốt hơn KPI ${metricMoneyLabel(kind,delta)}`;status="Đạt KPI";cls="good";}
+    else{deltaText=`Cao hơn KPI ${metricMoneyLabel(kind,Math.abs(delta))}`;status="Cần rà soát";cls="bad";}
+  }else if(mode==="lowerPct"){
+    need=kpi;
+    delta=kpi-actual;
+    progressText="≤ KPI";
+    if(!actual||!kpi){deltaText="-";status="Thiếu dữ liệu";cls="warnText";}
+    else if(actual<=kpi){deltaText=`Tốt hơn KPI ${pct2(Math.abs(delta))}`;status="Đạt KPI";cls="good";}
+    else{deltaText=`Cao hơn KPI ${pct2(Math.abs(delta))}`;status="Cần rà soát";cls="bad";}
+  }else{
+    need=kpi*progress;
+    delta=actual-need;
+    if(kind==="data")deltaText=delta>=0?`+${dataCell(delta)} so với tiến độ`:`Cần bổ sung ${dataCell(Math.abs(delta))}`;
+    else if(kind==="roas")deltaText=delta>=0?`+${Number(delta).toLocaleString("vi-VN",{maximumFractionDigits:2})} so với tiến độ`:`Cần bổ sung ${Number(Math.abs(delta)).toLocaleString("vi-VN",{maximumFractionDigits:2})}`;
+    else deltaText=delta>=0?`Vượt ${metricMoneyLabel(kind,delta)}`:`Cần bổ sung ${metricMoneyLabel(kind,Math.abs(delta))}`;
+    if(!kpi){status="Thiếu KPI";cls="warnText";}
+    else if(actual>=need){status="Đạt tiến độ";cls="good";}
+    else{status="Chậm tiến độ";cls="bad";}
+  }
+  return {name,kind,kpi,actual,actualPct,need,progressText,deltaText,status,cls};
+}
+function forecastNote(name,mode,cls){
+  if(name.includes("Chi phí")){
+    if(cls==="bad")return "Ngân sách dự kiến vượt kế hoạch; ưu tiên siết nhóm CPL cao và kiểm tra khu vực tiêu nhanh.";
+    if(cls==="warnText")return "Tốc độ tiêu còn chậm; có thể còn room ngân sách, chỉ nên scale nhóm CPL tốt.";
+    return "Pacing ngân sách đang tương đối an toàn, tiếp tục giữ nhịp và theo dõi CPL.";
+  }
+  if(name.includes("Data"))return cls==="good"?"Volume Data dự kiến đạt KPI nếu giữ hiệu suất hiện tại.":"Dự báo thiếu Data; cần tăng volume hoặc giảm CPL ở nhóm còn dư ngân sách.";
+  if(name.includes("CPL"))return cls==="good"?"CPL đang trong ngưỡng tốt, có thể scale có kiểm soát ở nhóm tạo Data ổn định.":"CPL vượt KPI; cần rà soát từ khóa, mẫu quảng cáo, landing page và khu vực có CPL cao.";
+  if(name.includes("Doanh số"))return cls==="good"?"Doanh số dự kiến đạt KPI, nên ưu tiên ngân sách cho nhóm có doanh thu thật.":"Doanh số dự báo chưa đạt; cần kiểm tra chất lượng Data và quy trình chuyển đổi/sales.";
+  if(name.includes("CIR"))return cls==="good"?"CIR đang kiểm soát tốt; chi phí/doanh số còn trong ngưỡng KPI.":"CIR vượt KPI; doanh số chưa bù tốc độ chi phí, cần siết nhóm kém hiệu quả.";
+  if(name.includes("ROAS"))return cls==="good"?"ROAS đạt kỳ vọng nếu giữ chất lượng doanh thu hiện tại.":"ROAS thấp hơn KPI; cần kiểm tra nhóm chi phí cao nhưng doanh thu thấp.";
+  return "Theo dõi thêm trước khi ra quyết định ngân sách.";
+}
+function forecastRow(name,kind,kpi,actual,progress,mode){
+  kpi=Number(kpi)||0; actual=Number(actual)||0; progress=Number(progress)||0;
+  let projected=0, ratio=0, gap=0, gapText="-", status="Thiếu dữ liệu", cls="warnText";
+  const safeProgress=Math.max(progress,0.0001);
+  if(mode==="budget"){
+    projected=actual/safeProgress; ratio=div(projected,kpi); gap=projected-kpi;
+    if(!kpi||!actual){status="Thiếu dữ liệu";cls="warnText";}
+    else if(ratio>1.05){status="Nguy cơ vượt NS";cls="bad";}
+    else if(ratio<0.85){status="Tiêu chậm";cls="warnText";}
+    else{status="Đúng pacing";cls="good";}
+    gapText=gap>=0?`Vượt ${metricMoneyLabel(kind,gap)}`:`Còn thiếu ${metricMoneyLabel(kind,Math.abs(gap))}`;
+  }else if(mode==="higher"){
+    projected=actual/safeProgress; ratio=div(projected,kpi); gap=projected-kpi;
+    if(!kpi){status="Thiếu KPI";cls="warnText";}
+    else if(projected>=kpi){status="Có khả năng đạt";cls="good";}
+    else{status="Nguy cơ không đạt";cls="bad";}
+    if(kind==="data")gapText=gap>=0?`Dư ${dataCell(gap)}`:`Thiếu ${dataCell(Math.abs(gap))}`;
+    else gapText=gap>=0?`Dư ${metricMoneyLabel(kind,gap)}`:`Thiếu ${metricMoneyLabel(kind,Math.abs(gap))}`;
+  }else if(mode==="higherRatio"){
+    projected=actual; ratio=div(projected,kpi); gap=projected-kpi;
+    if(!kpi||!actual){status="Thiếu dữ liệu";cls="warnText";}
+    else if(projected>=kpi){status="Có khả năng đạt";cls="good";}
+    else{status="Nguy cơ không đạt";cls="bad";}
+    gapText=gap>=0?`Tốt hơn ${metricMoneyLabel(kind,gap)}`:`Thấp hơn ${metricMoneyLabel(kind,Math.abs(gap))}`;
+  }else if(mode==="lower"){
+    projected=actual; ratio=kpi?div(kpi,projected):0; gap=kpi-projected;
+    if(!kpi||!actual){status="Thiếu dữ liệu";cls="warnText";}
+    else if(projected<=kpi){status="Đạt nếu giữ hiệu suất";cls="good";}
+    else{status="Khó đạt nếu giữ hiệu suất";cls="bad";}
+    gapText=gap>=0?`Tốt hơn ${metricMoneyLabel(kind,gap)}`:`Cao hơn ${metricMoneyLabel(kind,Math.abs(gap))}`;
+  }else if(mode==="lowerPct"){
+    projected=actual; ratio=kpi?div(kpi,projected):0; gap=kpi-projected;
+    if(!kpi||!actual){status="Thiếu dữ liệu";cls="warnText";}
+    else if(projected<=kpi){status="Đạt nếu giữ hiệu suất";cls="good";}
+    else{status="Khó đạt nếu giữ hiệu suất";cls="bad";}
+    gapText=gap>=0?`Tốt hơn ${pct2(Math.abs(gap))}`:`Cao hơn ${pct2(Math.abs(gap))}`;
+  }
+  return {name,kind,kpi,actual,projected,ratio,gapText,status,cls,note:forecastNote(name,mode,cls)};
+}
+function renderPacing(s){
+  const info=getProgressInfo();
+  if(!info.date){$("pacePanel").innerHTML=`<div class="paceHeader"><b>Tiến độ tháng</b><span>Chưa có dữ liệu ngày</span></div><div class="empty">Import Excel để xem tiến độ KPI theo tháng.</div>`;return;}
+  const progress=info.pct;
+  const rows=[
+    paceRow("Doanh số","money",s.kpiRevenue,s.revenue,progress,"higher"),
+    paceRow("Chi phí GG","money",s.kpiCost,s.cost,progress,"higher"),
+    paceRow("Data","data",s.kpiData,s.data,progress,"higher"),
+    paceRow("CPL / Giá Data","money",s.kpiCpl,s.cpl,progress,"lower"),
+    paceRow("CIR","pct",s.kpiCir,s.cir,progress,"lowerPct"),
+    paceRow("ROAS mới mới","roas",s.kpiRoas,s.roasNewNew,progress,"higher")
+  ];
+  const forecastRows=[
+    forecastRow("Chi phí GG","money",s.kpiCost,s.cost,progress,"budget"),
+    forecastRow("Data","data",s.kpiData,s.data,progress,"higher"),
+    forecastRow("CPL / Giá Data","money",s.kpiCpl,s.cpl,progress,"lower"),
+    forecastRow("Doanh số","money",s.kpiRevenue,s.revenue,progress,"higher"),
+    forecastRow("CIR","pct",s.kpiCir,s.cir,progress,"lowerPct"),
+    forecastRow("ROAS mới mới","roas",s.kpiRoas,s.roasNewNew,progress,"higherRatio")
+  ];
+  const mini=[
+    ["KPI Data",div(s.data,s.kpiData),`${dataCell(s.data)} / ${dataCell(s.kpiData)}`,""],
+    ["KPI CPL / Giá Data",div(s.cpl,s.kpiCpl),`${moneyFullCell(s.cpl)} / ${moneyFullCell(s.kpiCpl)}`,s.cpl&&s.kpiCpl&&s.cpl>s.kpiCpl?"red":""],
+    ["KPI ROAS",div(s.roasNewNew,s.kpiRoas),`${roasCell(s.roasNewNew)} / ${roasCell(s.kpiRoas)}`,""],
+    ["KPI Doanh số",div(s.revenue,s.kpiRevenue),`${moneyFullCell(s.revenue)} / ${moneyFullCell(s.kpiRevenue)}`,s.revenue<s.kpiRevenue*progress?"gold":""],
+    ["KPI Chi phí",div(s.cost,s.kpiCost),`${moneyFullCell(s.cost)} / ${moneyFullCell(s.kpiCost)}`,s.cost<s.kpiCost*progress?"gold":""]
+  ];
+  const bar=Math.min(Math.max(progress*100,0),100).toFixed(2);
+  $("pacePanel").innerHTML=`
+    <div class="paceHeader"><b>Tiến độ tháng</b><span>Tự nhảy theo ngày đến đang chọn</span></div>
+    <div class="paceTop">
+      <div class="paceMainCard"><div class="label">MKT</div><div class="date">${formatDateVN(info.date)}</div><div class="percent">${pct2(progress)}</div></div>
+      <div class="paceBarWrap"><div class="paceBar"><div class="paceFill" style="width:${bar}%"></div></div><div class="paceDesc">Đến <b>${formatDateVN(info.date)}</b>, tiến độ thời gian của tháng ${info.monthNo} là <b>${pct2(progress)}</b> (${info.day}/${info.total} ngày). Bảng dưới so sánh KPI theo tiến độ và dự báo khả năng đạt cuối tháng nếu hiệu suất hiện tại không đổi.</div></div>
+    </div>
+    <div class="paceCards">${mini.map(x=>`<div class="paceMini"><div class="k">${x[0]}</div><div class="v ${x[3]||""}">${pct2Cell(x[1])}</div><div class="sub">${x[2]}</div></div>`).join("")}</div>
+    <div class="paceHeader"><b>Thực đạt KPIs</b><span>So sánh kế hoạch, thực chạy và mốc cần đạt theo tiến độ tháng</span></div>
+    <div class="paceTableWrap"><table class="paceTable"><thead><tr><th style="width:13%">KPI</th><th>Kế hoạch</th><th>Thực đạt</th><th>% thực đạt</th><th>Mức cần đạt theo tiến độ</th><th>% tiến độ đúng</th><th>Tiến độ (+/-)</th><th>Trạng thái</th></tr></thead><tbody>
+      ${rows.map(r=>`<tr><td class="branch">${r.name}</td><td>${metricMoneyLabel(r.kind,r.kpi)}</td><td>${metricMoneyLabel(r.kind,r.actual)}</td><td>${pct2Cell(r.actualPct)}</td><td>${metricMoneyLabel(r.kind,r.need)}</td><td>${r.progressText}</td><td class="${r.cls}">${r.deltaText}</td><td><span class="paceStatus ${r.cls}">${r.status}</span></td></tr>`).join("")}
+    </tbody></table></div>
+    <div class="paceHeader"><b>Dự báo KPIs cuối tháng</b><span>Đánh giá theo run-rate hiện tại và góc nhìn Performance Digital</span></div>
+    <div class="paceTableWrap"><table class="paceTable"><thead><tr><th style="width:13%">KPI</th><th>Hiện tại</th><th>Dự báo cuối tháng</th><th>KPI mục tiêu</th><th>Chênh lệch dự báo</th><th>Khả năng đạt</th><th style="width:26%">Nhận định Performance</th></tr></thead><tbody>
+      ${forecastRows.map(r=>`<tr><td class="branch">${r.name}</td><td>${metricMoneyLabel(r.kind,r.actual)}</td><td>${metricMoneyLabel(r.kind,r.projected)}</td><td>${metricMoneyLabel(r.kind,r.kpi)}</td><td class="${r.cls}">${r.gapText}</td><td><span class="paceStatus ${r.cls}">${r.status}</span></td><td style="text-align:left;color:#dfffea">${r.note}</td></tr>`).join("")}
+    </tbody></table></div>`;
+}
+
+function calculate(){
+  syncState();let rows=currentRows(),sum=scoreSummary(),tSum=tableSummary(rows);
+  renderScore(sum);renderPacing(sum);renderTable(rows,sum,tSum);renderTrend();renderInsights(sum,rows);renderCharts(rows);
+  $("tableHint").textContent=state.group==="date"?`${num(rows.length)} ngày · Chi phí ${vnd(tSum.cost)} · Data ${num(tSum.data)} · CPL TB ${moneyCell(tSum.cpl)}`:`${num(rows.length)} nhóm · Chi phí ${vnd(tSum.cost)} · Data ${num(tSum.data)}`;
+  $("tableTitle").textContent=state.group==="date"?"Bảng Google Ads theo ngày":state.group==="month"?"Bảng Google Ads theo tháng":"Bảng Google Ads theo khu vực";
+}
+function renderScore(s){
+  const cards=[
+    ["KPI Chi phí",moneyScore(s.kpiCost),1],
+    ["Chi phí GG",moneyScore(s.cost),1],
+    ["% dùng NS",s.kpiCost?pct2(s.costPct):"-",0],
+    ["KPI Data",s.kpiData?dataCell(s.kpiData):"-",0],
+    ["Data",dataCell(s.data),0],
+    ["% đạt Data",s.kpiData?pct2(s.dataPct):"-",0],
+    ["CPL / Giá Data",moneyScore(s.cpl),1],
+    ["Doanh số",moneyScore(s.revenue),1],
+    ["CIR",s.revenue?pct2(s.cir):"-",0],
+    ["ROAS mới mới",roasCell(s.roasNewNew),0]
+  ];
+  $("scorecards").innerHTML=cards.map(c=>`<div class="card ${c[2]?"gold":""}"><div class="k">${c[0]}</div><div class="v" title="${esc(c[1])}">${c[1]}</div></div>`).join("")
+}
+function renderTable(rows,score,tSum){
+  if(state.group==="date"){
+    $("mainColGroup").innerHTML=`<col style="width:11%"><col style="width:14%"><col style="width:11%"><col style="width:8%"><col style="width:10%"><col style="width:14%"><col style="width:16%"><col style="width:16%">`;
+    $("mainHead").innerHTML=`<tr><th>Ngày</th><th>Chi phí GG</th><th>% Chi phí</th><th>Data</th><th>% Data</th><th>CPL / Giá Data</th><th>So với KPI CPL</th><th>Đánh giá</th></tr>`;
+    if(!rows.length){$("mainTable").innerHTML=`<tr><td colspan="8" class="empty">Không có dữ liệu ngày phù hợp với bộ lọc</td></tr>`;return}
+    const totalCost=Number(tSum?.cost)||0,totalData=Number(tSum?.data)||0,kpiCpl=Number(score?.kpiCpl)||0;
+    function evalDay(r){
+      const costShare=div(r.cost,totalCost),dataShare=div(r.data,totalData),cpl=Number(r.cpl)||0;
+      if(r.cost>0&&!r.data)return {cls:"bad",text:"Có chi phí, chưa có Data"};
+      if(!r.cost&&!r.data)return {cls:"warnText",text:"Không phát sinh"};
+      if(kpiCpl&&cpl>kpiCpl*1.15)return {cls:"bad",text:"CPL cao, cần rà soát"};
+      if(dataShare>costShare+0.08)return {cls:"good",text:"Data tốt hơn chi phí"};
+      if(kpiCpl&&cpl<=kpiCpl)return {cls:"good",text:"CPL đạt KPI"};
+      return {cls:"warnText",text:"Theo dõi thêm"};
+    }
+    function compareKpi(r){
+      const cpl=Number(r.cpl)||0;if(!cpl||!kpiCpl)return {cls:"muted",text:"-"};
+      const gap=div(cpl-kpiCpl,kpiCpl);
+      if(gap<=0)return {cls:"good",text:`Tốt hơn ${pct2(Math.abs(gap))}`};
+      if(gap<=0.15)return {cls:"warnText",text:`Cao hơn ${pct2(gap)}`};
+      return {cls:"bad",text:`Cao hơn ${pct2(gap)}`};
+    }
+    $("mainTable").innerHTML=rows.map(r=>{
+      const costShare=div(r.cost,totalCost),dataShare=div(r.data,totalData),e=evalDay(r),cmp=compareKpi(r);
+      return `<tr><td class="branch">${esc(r.name)}</td><td>${moneyFullCell(r.cost)}</td><td>${pct2Cell(costShare)}</td><td>${dataCell(r.data)}</td><td>${pct2Cell(dataShare)}</td><td class="${r.cpl?"warnText":""}">${moneyFullCell(r.cpl)}</td><td class="${cmp.cls}">${cmp.text}</td><td><span class="evalBadge ${e.cls}">${e.text}</span></td></tr>`
+    }).join("");
+    return;
+  }
+  $("mainColGroup").innerHTML="";
+  const first=state.group==="month"?"Tháng":"Khu vực";
+  $("mainHead").innerHTML=`<tr><th>${first}</th><th>KPI Chi phí GG</th><th>Thực chạy chi phí GG</th><th>Chi phí còn lại</th><th>% dùng NS</th><th>KPI Data</th><th>Thực chạy Data</th><th>% đạt Data</th><th>KPI CPL</th><th>Thực chạy CPL</th><th>% CPL</th><th>KPI Doanh số</th><th>Thực chạy Doanh số</th><th>% đạt Doanh số</th><th>KPI CIR</th><th>CIR</th><th>% CIR</th><th>Doanh thu (mới mới)</th><th>% CIR mới mới</th><th>KPI ROAS</th><th>ROAS mới mới</th><th>% ROAS mới mới</th><th>Doanh thu (mới)</th><th>Chênh lệch</th><th>ROAS mới</th></tr>`;
+  if(!rows.length){$("mainTable").innerHTML=`<tr><td colspan="25" class="empty">Không có dữ liệu phù hợp với bộ lọc hiện tại</td></tr>`;return}
+  $("mainTable").innerHTML=rows.map(r=>`<tr><td class="branch">${esc(r.name)}</td><td>${moneyFullCell(r.kpiCost)}</td><td>${moneyFullCell(r.cost)}</td><td class="${r.remaining>=0?"good":"bad"}">${moneyFullCell(r.remaining)}</td><td class="${r.costPct<=1?"good":"bad"}">${pct2Cell(r.costPct)}</td><td>${dataCell(r.kpiData)}</td><td>${dataCell(r.data)}</td><td class="${r.dataPct>=1?"good":"warnText"}">${pct2Cell(r.dataPct)}</td><td>${moneyFullCell(r.kpiCpl)}</td><td class="${r.kpiCpl&&r.cpl<=r.kpiCpl?"good":r.cpl?"bad":""}">${moneyFullCell(r.cpl)}</td><td>${pct2Cell(r.cplPct)}</td><td>${moneyFullCell(r.kpiRevenue)}</td><td>${moneyFullCell(r.revenue)}</td><td>${pct2Cell(r.revenuePct)}</td><td>${pct2Cell(r.kpiCir)}</td><td class="${r.kpiCir&&r.cir<=r.kpiCir?"good":"warnText"}">${pct2Cell(r.cir)}</td><td>${pct2Cell(r.cirPct)}</td><td>${moneyFullCell(r.revenueNewNew)}</td><td>${pct2Cell(r.cirNew)}</td><td>${roasCell(r.kpiRoas)}</td><td>${roasCell(r.roasNewNew)}</td><td>${pct2Cell(r.roasPct)}</td><td>${moneyFullCell(r.revenueNew)}</td><td class="${r.diff>=0?"good":"bad"}">${moneyFullCell(r.diff)}</td><td>${roasCell(r.roasNew)}</td></tr>`).join("");
+}
+
+function shortMoneyK(n){
+  n=Number(n)||0;
+  if(!n)return "-";
+  const sign=n<0?"-":""; const abs=Math.abs(n);
+  if(abs>=1000000)return sign+(abs/1000000).toLocaleString("vi-VN",{maximumFractionDigits:1})+"tr";
+  if(abs>=1000)return sign+Math.round(abs/1000).toLocaleString("vi-VN")+"k";
+  return sign+Math.round(abs).toLocaleString("vi-VN")+"đ";
+}
+function compactDate(d){if(!d)return"-";let [y,m,dd]=d.split("-");return `${dd}/${m}`}
+function svgLinePath(points){
+  const valid=points.filter(p=>p&&isFinite(p.x)&&isFinite(p.y));
+  if(!valid.length)return "";
+  if(valid.length===1)return `M ${valid[0].x} ${valid[0].y}`;
+  return valid.map((p,i)=>`${i?"L":"M"} ${p.x} ${p.y}`).join(" ");
+}
+function renderTrend(){
+  syncState();
+  const rows=aggregateDaily(dailyRecords.filter(passDay),r=>r.date).sort((a,b)=>a.name.localeCompare(b.name));
+  if(!$('trendPanel'))return;
+  if(!rows.length){
+    $('trendPanel').innerHTML=`<div class="trendHead"><b>Xu hướng Data & CPL theo ngày</b><span>Theo ngày đang lọc</span></div><div class="trendEmpty">Chưa có dữ liệu ngày phù hợp với bộ lọc hiện tại.</div>`;
+    return;
+  }
+  const totalData=rows.reduce((s,r)=>s+(Number(r.data)||0),0);
+  const totalCost=rows.reduce((s,r)=>s+(Number(r.cost)||0),0);
+  const avgCpl=div(totalCost,totalData);
+  const kpiCpl=scoreSummary().kpiCpl||0;
+  const bestData=[...rows].sort((a,b)=>(b.data||0)-(a.data||0))[0];
+  const cplRows=rows.filter(r=>Number(r.data)>0&&Number(r.cpl)>0);
+  const bestCpl=[...cplRows].sort((a,b)=>a.cpl-b.cpl)[0];
+  const worstCpl=[...cplRows].sort((a,b)=>b.cpl-a.cpl)[0];
+  const w=1080,h=310,padL=58,padR=42,padT=34,padB=50;
+  const innerW=w-padL-padR, innerH=h-padT-padB;
+  const maxData=Math.max(1,...rows.map(r=>Number(r.data)||0));
+  const maxCpl=Math.max(1,...cplRows.map(r=>Number(r.cpl)||0),kpiCpl||0);
+  const xAt=i=> rows.length===1 ? padL+innerW/2 : padL+(innerW*i/(rows.length-1));
+  const yData=v=> padT+innerH-(Number(v)||0)/maxData*innerH;
+  const yCpl=v=> padT+innerH-(Number(v)||0)/maxCpl*innerH;
+  const dataPts=rows.map((r,i)=>({x:xAt(i),y:yData(r.data),v:Number(r.data)||0,date:r.name}));
+  const cplPts=rows.map((r,i)=>Number(r.data)>0&&Number(r.cpl)>0?{x:xAt(i),y:yCpl(r.cpl),v:Number(r.cpl)||0,date:r.name}:null).filter(Boolean);
+  const kpiY=kpiCpl?yCpl(kpiCpl):null;
+  const grid=[0,.25,.5,.75,1].map(t=>{const y=padT+innerH*t;return `<line class="trendGrid" x1="${padL}" y1="${y}" x2="${w-padR}" y2="${y}"></line>`}).join("");
+  const xLabels=rows.map((r,i)=>`<text class="trendText muted" text-anchor="middle" x="${xAt(i)}" y="${h-18}">${compactDate(r.name)}</text>`).join("");
+  const dataLabels=dataPts.map(p=>p.v?`<text class="trendText data" text-anchor="middle" x="${p.x}" y="${Math.max(14,p.y-12)}">${num(p.v)}</text>`:"").join("");
+  const cplLabels=cplPts.map(p=>`<text class="trendText cpl" text-anchor="middle" x="${p.x}" y="${Math.min(h-padB+24,p.y+24)}">${shortMoneyK(p.v)}</text>`).join("");
+  const dataCircles=dataPts.map(p=>`<circle class="trendPointData" cx="${p.x}" cy="${p.y}" r="5"><title>${compactDate(p.date)}: ${num(p.v)} data</title></circle>`).join("");
+  const cplCircles=cplPts.map(p=>`<circle class="trendPointCpl" cx="${p.x}" cy="${p.y}" r="5"><title>${compactDate(p.date)}: ${vndFull(p.v)} / data</title></circle>`).join("");
+  const kpiLine=kpiY?`<line class="trendLineKpi" x1="${padL}" y1="${kpiY}" x2="${w-padR}" y2="${kpiY}"></line><text class="trendText bad" x="${w-padR-8}" y="${Math.max(14,kpiY-7)}" text-anchor="end">KPI CPL ${shortMoneyK(kpiCpl)}</text>`:"";
+  const svg=`<svg class="trendSvg" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" role="img" aria-label="Xu hướng Data và CPL theo ngày">
+    ${grid}<line class="trendAxis" x1="${padL}" y1="${padT+innerH}" x2="${w-padR}" y2="${padT+innerH}"></line><line class="trendAxis" x1="${padL}" y1="${padT}" x2="${padL}" y2="${padT+innerH}"></line>
+    ${kpiLine}<path class="trendLineData" d="${svgLinePath(dataPts)}"></path><path class="trendLineCpl" d="${svgLinePath(cplPts)}"></path>
+    ${dataCircles}${cplCircles}${dataLabels}${cplLabels}${xLabels}
+  </svg>`;
+  const cplStatus=kpiCpl&&avgCpl? (avgCpl<=kpiCpl?`Tốt hơn KPI ${pct2(Math.abs(div(avgCpl-kpiCpl,kpiCpl)))}`:`Cao hơn KPI ${pct2(Math.abs(div(avgCpl-kpiCpl,kpiCpl)))}`) : "Chưa có KPI CPL";
+  $('trendPanel').innerHTML=`<div class="trendHead"><b>Xu hướng Data & CPL theo ngày</b><span>Theo ngày đang lọc · Nguồn BUDGET NGÀY</span></div>
+  <div class="trendBody"><div class="trendChartBox"><div class="trendLegend"><span><i class="trendDot data"></i>Data Tổng</span><span><i class="trendDot cpl"></i>CPL / Giá Data</span>${kpiCpl?`<span><i class="trendDot kpi"></i>KPI CPL</span>`:""}</div>${svg}</div>
+  <div class="trendSide"><div class="trendMini"><div class="k">Tổng Data</div><div class="v blue">${dataCell(totalData)}</div><div class="sub">Tổng trong khoảng ngày đang lọc</div></div><div class="trendMini"><div class="k">CPL trung bình</div><div class="v gold">${moneyScore(avgCpl)}</div><div class="sub">${esc(cplStatus)}</div></div><div class="trendMini"><div class="k">Ngày Data cao nhất</div><div class="v">${bestData?dataCell(bestData.data):"-"}</div><div class="sub">${bestData?compactDate(bestData.name):"-"}</div></div><div class="trendMini"><div class="k">CPL tốt nhất</div><div class="v gold">${bestCpl?moneyScore(bestCpl.cpl):"-"}</div><div class="sub">${bestCpl?compactDate(bestCpl.name):"Chưa có data"}${worstCpl?` · Cao nhất ${moneyScore(worstCpl.cpl)}`:""}</div></div></div></div>`;
+}
+
+function renderInsights(s,rows){
+  let overview=[],scale=[],risk=[],action=[];
+  if(!monthlyRecords.length){
+    overview=["Tải file KPI để AI bắt đầu đọc hiệu suất Google Ads."];
+    scale=["Chưa có dữ liệu để xác định nhóm nên scale."];
+    risk=["Chưa có dữ liệu để cảnh báo."];
+    action=["Kiểm tra đúng file KPI Google Ads nội bộ hoặc file cùng cấu trúc."];
+    $("insights").innerHTML=box("Tổng quan Performance",overview,"todo")+box("Nhóm nên Scale",scale,"good")+box("Nhóm cần Rà soát",risk,"warn")+box("Hành động đề xuất",action,"todo");return;
+  }
+
+  let perfRows=aggregateMonthly(monthlyRecords.filter(passMonth),r=>r.region).sort((a,b)=>regionSort(a.name,b.name));
+  let valid=perfRows.filter(x=>x.cost>0||x.data>0||x.revenue>0);
+
+  if(s.kpiCost&&s.kpiData){
+    if(s.dataPct>s.costPct+0.12) overview.push(`Data đang đi nhanh hơn tốc độ tiêu ngân sách: chi phí đạt ${pct(s.costPct)}, nhưng Data đạt ${pct(s.dataPct)} KPI.`);
+    else if(s.costPct>s.dataPct+0.12) overview.push(`Ngân sách đang tiêu nhanh hơn tốc độ tạo Data: chi phí đạt ${pct(s.costPct)}, Data mới đạt ${pct(s.dataPct)} KPI.`);
+    else overview.push(`Tốc độ tiêu ngân sách và tạo Data đang khá cân bằng: chi phí ${pct(s.costPct)}, Data ${pct(s.dataPct)} KPI.`);
+  }else{
+    overview.push(`Dashboard đang đọc được ${num(s.data)} Data và ${vnd(s.cost)} chi phí GG theo bộ lọc hiện tại.`);
+  }
+
+  if(s.kpiCpl&&s.cpl){
+    let gap=Math.abs(1-div(s.cpl,s.kpiCpl));
+    if(s.cpl<=s.kpiCpl) overview.push(`CPL đang tốt hơn KPI: ${vnd(s.cpl)} / data so với KPI ${vnd(s.kpiCpl)}.`);
+    else overview.push(`CPL đang cao hơn KPI khoảng ${pct(gap)}: ${vnd(s.cpl)} / data so với KPI ${vnd(s.kpiCpl)}.`);
+  }
+  if(s.kpiRevenue&&s.revenue){overview.push(`Doanh số đạt ${pct(s.revenuePct)} KPI, ghi nhận ${vnd(s.revenue)}.`)}
+  if(s.kpiCir&&s.cir){overview.push(`${s.cir<=s.kpiCir?"CIR đang trong ngưỡng kiểm soát":"CIR đang cao hơn ngưỡng KPI"}: ${pct(s.cir)} so với KPI ${pct(s.kpiCir)}.`)}
+  if(s.kpiRoas&&s.roasNewNew){overview.push(`${s.roasNewNew>=s.kpiRoas?"ROAS mới mới đang đạt kỳ vọng":"ROAS mới mới đang thấp hơn KPI"}: ${roasCell(s.roasNewNew)} so với KPI ${roasCell(s.kpiRoas)}.`)}
+
+  let scaleRows=valid.filter(x=>x.data>0&&x.cost>0&&(!x.kpiCpl||x.cpl<=x.kpiCpl)&&(!x.kpiCir||!x.cir||x.cir<=x.kpiCir)&&(!x.kpiRoas||!x.roasNewNew||x.roasNewNew>=x.kpiRoas)).sort((a,b)=>a.cpl-b.cpl).slice(0,3);
+  if(scaleRows.length){
+    scaleRows.forEach(x=>scale.push(`${esc(x.name)}: CPL ${vnd(x.cpl)} / data, Data đạt ${x.kpiData?pct(x.dataPct):num(x.data)+" data"}${x.roasNewNew?`, ROAS mới mới ${roasCell(x.roasNewNew)}`:""}.`));
+  }else{
+    let best=valid.filter(x=>x.data>0&&x.cost>0).sort((a,b)=>a.cpl-b.cpl)[0];
+    if(best) scale.push(`${esc(best.name)} đang là nhóm có CPL tốt nhất hiện tại: ${vnd(best.cpl)} / data. Cần kiểm tra thêm ROAS/CIR trước khi scale mạnh.`);
+    else scale.push("Chưa có nhóm đủ dữ liệu chi phí và Data để đề xuất scale.");
+  }
+
+  let riskRows=valid.filter(x=>{
+    let cplBad=x.kpiCpl&&x.cpl>x.kpiCpl*1.12;
+    let spendFast=x.kpiCost&&x.kpiData&&x.costPct>x.dataPct+0.12;
+    let cirBad=x.kpiCir&&x.cir>x.kpiCir*1.12;
+    let roasBad=x.kpiRoas&&x.roasNewNew&&x.roasNewNew<x.kpiRoas*.88;
+    return cplBad||spendFast||cirBad||roasBad;
+  }).sort((a,b)=>{
+    let ar=a.kpiCpl?div(a.cpl,a.kpiCpl):0, br=b.kpiCpl?div(b.cpl,b.kpiCpl):0;return br-ar;
+  }).slice(0,3);
+  if(riskRows.length){
+    riskRows.forEach(x=>{
+      let reasons=[];
+      if(x.kpiCpl&&x.cpl>x.kpiCpl)reasons.push(`CPL ${vnd(x.cpl)} cao hơn KPI ${vnd(x.kpiCpl)}`);
+      if(x.kpiCost&&x.kpiData&&x.costPct>x.dataPct+0.12)reasons.push(`tốc độ tiêu ngân sách ${pct(x.costPct)} nhanh hơn Data ${pct(x.dataPct)}`);
+      if(x.kpiCir&&x.cir>x.kpiCir)reasons.push(`CIR ${pct(x.cir)} cao hơn KPI ${pct(x.kpiCir)}`);
+      if(x.kpiRoas&&x.roasNewNew&&x.roasNewNew<x.kpiRoas)reasons.push(`ROAS mới mới ${roasCell(x.roasNewNew)} thấp hơn KPI ${roasCell(x.kpiRoas)}`);
+      risk.push(`${esc(x.name)}: ${reasons.join("; ")}.`);
+    });
+  }else risk.push("Chưa phát hiện nhóm có rủi ro lớn theo CPL, tốc độ tiêu ngân sách, CIR hoặc ROAS trong bộ lọc hiện tại.");
+
+  if(s.kpiCost&&s.kpiData&&s.dataPct>s.costPct+0.12&&s.cpl<=s.kpiCpl) action.push("Có thể tăng ngân sách nhẹ cho nhóm CPL tốt, ưu tiên tăng từng bước 10–20% để tránh làm CPL bật tăng.");
+  if(s.kpiCost&&s.kpiData&&s.costPct>s.dataPct+0.12) action.push("Tạm chưa scale nhóm đang tiêu ngân sách nhanh hơn tốc độ tạo Data; cần rà lại từ khóa, mẫu quảng cáo, landing page và khu vực phân phối.");
+  if(s.kpiRevenue&&s.revenuePct<.7&&s.dataPct>=.7) action.push("Data đã có nhưng doanh số chưa tương xứng; nên kiểm tra chất lượng lead, tốc độ gọi, lịch hẹn và tỉ lệ chốt của CRM/Sales.");
+  if(s.kpiCir&&s.cir>s.kpiCir) action.push("CIR cao: ưu tiên ngân sách cho khu vực có CPL thấp và doanh số tốt, giảm nhóm tiêu nhiều nhưng doanh thu thấp.");
+  if(s.kpiRoas&&s.roasNewNew<s.kpiRoas) action.push("ROAS mới mới thấp: cần soi lại khu vực/doanh thu mới mới, tránh chỉ tối ưu theo CPL mà bỏ qua chất lượng doanh thu.");
+  if(!action.length) action.push("Giữ nhịp tối ưu hiện tại, tiếp tục theo dõi nhóm CPL tốt, ROAS ổn và không tăng ngân sách quá nhanh trong một lần.");
+
+  $("insights").innerHTML=box("Tổng quan Performance",overview,"todo")+box("Nhóm nên Scale",scale,"good")+box("Nhóm cần Rà soát",risk,"warn")+box("Hành động đề xuất",action,"todo")
+}
+function box(title,items,cls){return`<div class="insight ${cls}"><h3>${title}</h3><ul>${items.map(x=>`<li>${x}</li>`).join("")}</ul></div>`}
+function renderCharts(rows){
+  // Biểu đồ 1 & 3 lấy từ BUDGET KPIs để phân bổ theo khu vực.
+  // Biểu đồ 2 lấy từ BUDGET NGÀY để xem data phát sinh theo ngày.
+  let costByRegion=new Map(), dataByDate=new Map(), dataByRegion=new Map();
+
+  monthlyRecords.filter(passMonth).forEach(r=>{
+    costByRegion.set(r.region,(costByRegion.get(r.region)||0)+r.cost);
+    dataByRegion.set(r.region,(dataByRegion.get(r.region)||0)+r.data);
+  });
+
+  aggregateDaily(dailyRecords.filter(passDay),r=>r.date).forEach(r=>{
+    dataByDate.set(r.name,(dataByDate.get(r.name)||0)+r.data);
+  });
+
+  renderDonut("chartRegion","Tỉ trọng chi phí theo khu vực",costByRegion,"chi phí");
+  renderDonut("chartData","Tỉ trọng Data phát sinh theo ngày",dataByDate,"data");
+  renderDonut("chartMonth","Tỉ trọng data theo khu vực",dataByRegion,"data");
+}
+function renderDonut(id,title,map,unit){
+  let data=[...map.entries()].filter(x=>x[1]>0).map(([name,value])=>({name,value})).sort((a,b)=>b.value-a.value).slice(0,8);let total=data.reduce((a,b)=>a+b.value,0);let grad="#1b3025";
+  if(total>0){let acc=0;grad="conic-gradient("+data.map((d,i)=>{let st=acc/total*100;acc+=d.value;let en=acc/total*100;return `${COLOR[i%COLOR.length]} ${st}% ${en}%`}).join(",")+")"}
+  $(id).innerHTML=`<div class="chartTitle"><b>${title}</b><span>${unit==="data"?num(total)+" data":vnd(total)}</span></div><div class="donutRow"><div class="donut" style="background:${grad}"><div class="donutCenter">${unit==="data"?num(total):vnd(total)}<br><small style="font-size:11px;color:var(--muted)">${unit}</small></div></div><div class="legend">${data.length?data.map((d,i)=>`<div class="li"><span class="dot" style="background:${COLOR[i%COLOR.length]}"></span><div>${esc(d.name)}<small>${unit==="data"?num(d.value)+" data":vnd(d.value)} · ${pct(d.value/total)}</small></div><b>${pct(d.value/total)}</b></div>`).join(""):`<div class="muted">Chưa có dữ liệu</div>`}</div></div>`
+}
+
+function getAppsScriptUrl(){return (FIXED_APPS_SCRIPT_URL||localStorage.getItem(SHEET_URL_STORAGE_KEY)||"").trim()}
+function setAppsScriptUrl(url){url=String(url||"").trim();if(url)localStorage.setItem(SHEET_URL_STORAGE_KEY,url)}
+function openSheetModal(){if(!ADMIN_MODE){alert("Chế độ xem: không có quyền kết nối Sheet.");return}const modal=$("sheetModal");$("sheetUrlInput").value=getAppsScriptUrl();modal.classList.add("show");modal.setAttribute("aria-hidden","false");setTimeout(()=>$("sheetUrlInput").focus(),30)}
+function closeSheetModal(){const modal=$("sheetModal");modal.classList.remove("show");modal.setAttribute("aria-hidden","true")}
+function normalizeAppsScriptUrl(url){url=String(url||"").trim();if(!url)return"";return url.replace(/\s+/g,"")}
+function payloadToWorkbook(payload){
+  const sheets=payload?.sheets||payload?.Sheets||{};
+  const names=Object.keys(sheets);
+  if(!names.length)throw new Error("Apps Script không trả về sheets hợp lệ");
+  const wb={SheetNames:names,Sheets:{}};
+  names.forEach(name=>{wb.Sheets[name]=XLSX.utils.aoa_to_sheet(sheets[name]||[])});
+  return wb;
+}
+function loadJsonp(url,timeoutMs=30000){
+  return new Promise((resolve,reject)=>{
+    const cb="__sheetCallback_"+Date.now()+"_"+Math.random().toString(36).slice(2);
+    const sep=url.includes("?")?"&":"?";
+    const script=document.createElement("script");
+    const timer=setTimeout(()=>{cleanup();reject(new Error("Quá thời gian kết nối Google Sheet"))},timeoutMs);
+    function cleanup(){clearTimeout(timer);delete window[cb];script.remove()}
+    window[cb]=data=>{cleanup();resolve(data)};
+    script.onerror=()=>{cleanup();reject(new Error("Không tải được dữ liệu từ Apps Script"))};
+    script.src=url+sep+"callback="+encodeURIComponent(cb)+"&_="+Date.now();
+    document.body.appendChild(script);
+  });
+}
+async function updateFromGoogleSheet(){
+  const url=normalizeAppsScriptUrl(getAppsScriptUrl());
+  if(!url){openSheetModal();$("status").textContent="Chưa kết nối Sheet";return}
+  const btn=$("refreshSheetBtn");
+  try{
+    btn.disabled=true;$("status").textContent="Đang cập nhật từ Sheet...";
+    const payload=await loadJsonp(url);
+    if(payload&&payload.ok===false)throw new Error(payload.error||"Apps Script báo lỗi");
+    const wb=payloadToWorkbook(payload);
+    readWorkbook(wb);
+    const ts=payload?.updatedAt?` · ${payload.updatedAt}`:"";
+    $("status").textContent=`Đã cập nhật từ Google Sheet${ts}`;
+  }catch(err){
+    console.error(err);
+    $("status").textContent="Không kết nối được Sheet";
+    alert("Không kết nối được Google Sheet. Kiểm tra URL /exec, quyền Apps Script và tên sheet.\n\nChi tiết: "+(err?.message||err));
+  }finally{
+    btn.disabled=false;
+  }
+}
+
+["fromDate","toDate","monthFilter","regionFilter"].forEach(id=>$(id).addEventListener("change",calculate));
+$("fileInput").addEventListener("change",async e=>{let f=e.target.files[0];if(!f)return;$("status").textContent="Đang đọc file KPI...";let buf=await f.arrayBuffer();let wb=XLSX.read(buf,{type:"array",cellDates:false});readWorkbook(wb)});
+$("refreshSheetBtn").addEventListener("click",updateFromGoogleSheet);
+$("connectSheetBtn").addEventListener("click",openSheetModal);
+$("closeSheetModal").addEventListener("click",closeSheetModal);
+$("cancelSheetModal").addEventListener("click",closeSheetModal);
+$("saveSheetUrl").addEventListener("click",()=>{const url=normalizeAppsScriptUrl($("sheetUrlInput").value);if(!url){alert("Bạn cần nhập Apps Script Web App URL /exec");return}setAppsScriptUrl(url);closeSheetModal();$("status").textContent="Đã lưu kết nối Sheet";});
+$("sheetModal").addEventListener("click",e=>{if(e.target.id==="sheetModal")closeSheetModal()});
+fill("monthFilter",["Tất cả"]);fill("regionFilter",["Tất cả"]);renderScore(blank("Tổng"));renderPacing(blank("Tổng"));renderTrend();renderInsights({cost:0,data:0},[]);renderDonut("chartRegion","Tỉ trọng chi phí theo khu vực",new Map(),"chi phí");renderDonut("chartData","Tỉ trọng Data phát sinh theo ngày",new Map(),"data");renderDonut("chartMonth","Tỉ trọng data theo khu vực",new Map(),"data");
+if(FIXED_APPS_SCRIPT_URL){setTimeout(updateFromGoogleSheet,180);}
+
+</script>
+</body>
+</html>
